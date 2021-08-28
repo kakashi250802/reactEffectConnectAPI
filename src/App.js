@@ -1,23 +1,33 @@
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
-
+import PostList from './components/PostList';
 function App() {
+
+
+  const[postList,setPostList] = useState([]);
+  useEffect( ()=>{
+    async function fetchPostList(){
+      try {
+        
+      const requestUrl='http://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1';
+        const reponse=await fetch(requestUrl);
+        const reponseJSON= await reponse.json();
+        const {data}=reponseJSON;
+        setPostList(data);
+      } catch (error) {
+        console.error('Failed to fetch post list',error.message);
+      }
+    }
+    
+    
+    
+    fetchPostList()
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  
+    <PostList posts={postList} />
     </div>
   );
 }
